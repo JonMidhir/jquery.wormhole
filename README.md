@@ -1,6 +1,6 @@
 # jQuery WormHole Plugin
 
-Extension for jQuery-ui draggable. Allows child objects matching a defined selector to be dragged past the boundaries of their container and enter at the boundary of another. When an acceptable child object is dragged past the edge of it's container it starts to appear at the opposite edge of the next container in the group of worm holes.
+For use with jQuery-ui draggable. Allows child objects matching a defined selector to be dragged past the boundaries of their container and enter at the boundary of another. When an acceptable child object is dragged past the edge of it's container it starts to appear at the opposite edge of the next container in the group of worm holes.
 
 Useful for calendar style applications, where events should be able to span multiple days. Extracted from the Rotify app (www.rotify.com).
 
@@ -8,7 +8,7 @@ Useful for calendar style applications, where events should be able to span mult
 
 Define container objects matching 'selector' as wormholes:
 
-$('selector').isWormHole(group, childselector, stopCallback);
+	$('selector').isWormHole(group, childselector, stopCallback);
 
 That's it!
 
@@ -30,9 +30,9 @@ Very early stage:
 ## Supported Browsers
 
 Tested on: 
-	- FireFox 3.6+ & 4beta
-	- Chrome
-	- Safari
+- FireFox 3.6+ & 4beta
+- Chrome
+- Safari
 	
 ## Documentation and demos
 
