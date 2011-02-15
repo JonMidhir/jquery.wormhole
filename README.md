@@ -2,9 +2,11 @@
 
 For use with jQuery-ui draggable. Allows child objects matching a defined selector to be dragged past the boundaries of their container and enter at the boundary of another. When an acceptable child object is dragged past the edge of it's container it starts to appear at the opposite edge of the next container in the group of worm holes.
 
-Useful for calendar style applications, where events should be able to span multiple days. Extracted from the Rotify app (www.rotify.com).
+Useful for calendar style applications, where events should be able to span multiple days. Extracted from the Rotify app [rotify.com](www.rotify.com).
 
 ## Usage
+
+Requires jQuery 1.4+ and jQuery-UI. 
 
 Define container objects matching 'selector' as wormholes:
 
@@ -30,6 +32,7 @@ Very early stage:
 ## Supported Browsers
 
 Tested on: 
+
 - FireFox 3.6+ & 4beta
 - Chrome
 - Safari
@@ -40,4 +43,4 @@ Coming soon
 
 ## Authors
 
-Originally developed by John M. Hope (http://github.com/jonmidhir) for the Rotify project (www.rotify.com)
+Originally developed by John M. Hope [github.com/JonMidhir](http://github.com/jonmidhir) for the Rotify project [rotify.com](www.rotify.com)
