@@ -10,13 +10,18 @@ Requires jQuery 1.4+ and jQuery-UI.
 
 Define container objects matching 'selector' as wormholes:
 
-	$('selector').isWormHole(group, childselector, stopCallback);
+	$('selector').isWormHole({options});
 
 That's it!
 
+Options: 
+
 - group: string identifier, allows you to have different groups of wormholes on the same page
-- childselector: limits the objects that can pass through the wormhole to those matching this selector
-- stopCallback: a callback function that is called when a child object is dropped on the other side of the wormhole
+- selector: limits the objects that can pass through the wormhole to those matching this selector
+
+Events:
+
+- stop: a callback function that is called when a child object is dropped on the other side of the wormhole
 
 Delegates to new objects created in the container, so children can be dragged through the worm hole as soon as they're created.
 
@@ -24,8 +29,6 @@ Delegates to new objects created in the container, so children can be dragged th
 
 Very early stage:
 
-- Arguments should be accepted as an options hash
-- Currently only works with the southern edge of the container (so objects exit through the north edge of the next wormhole)
 - Create an argument that allows active edges to be defined: north, south, east, west, horizontal, vertical and array ([east, north])
 - A child object must be dropped on the other side of a wormhole before it can be dragged on through the next.
 
