@@ -1,6 +1,6 @@
 /*  Worm Hole
 
-	Usage: $('selector').isWormHole(group, objectsref, stopCallback); where:
+	Usage: $('selector').isWormHole({options}); where:
 		group is an arbitrary name for this group of worm holes,
 		objectsref defines all child objects that can pass through the worm hole,
 		stopCallback is a callback that is called when the dragging stops on the other side of the wormhole
@@ -11,14 +11,16 @@
 
 (function($){
 	$.fn.isWormHole = function(options) {
-		this.each(function() {
+		
 			var defaults = {
 				group: 'default', 
 				selector: '*', 
-				stop: function(){}
+				stop: null
 			};
 
 			var options = $.extend(defaults, options);
+			
+			this.each(function() {
 
 			var $thisObject = $(this);
 			$thisObject.css('overflow', 'hidden');
@@ -27,11 +29,14 @@
 			}
 			
 			$thisObject.find(options.selector).each(function() {
-				$(this).css('position', 'absolute');
+				if($(this).css('position') != 'absolute') {
+					$(this).css('position', 'absolute');
+				}
 			});
 			$thisObject.data('wormGroup', options.group);
 			$thisObject.addClass('wormgroup-' + options.group); // This really shouldn't be necessary, but until we can find others via their jQuery .data() attributes it is
 			$thisObject.delegate(options.selector, 'mouseover', function() {
+
 				if ($(this).data('isWorm') != true && $(this).data('isClone') != true) { // All elements now and in the future get everything in this if statement done to them once
 					var containmentCoords = [$thisObject.offset().left, $thisObject.offset().top - $thisObject.height(), $thisObject.offset().left + $thisObject.width() - $(this).width(), $thisObject.offset().top + ($thisObject.height() * 2)];
 					$(this).draggable( "option", "containment", containmentCoords);
@@ -50,7 +55,6 @@
 			$cloneWorm.data('isClone', true);
 
 			$(this).data('isWorm', true);
-			var errorBars = $(this).height() / 2;
 
 			this.bind("drag", function(event, ui) { //pairs the two so that both move when the other is grabbed
 				if ($(this).position().top + $(this).height() > parent.height() && $nextWormHole.length > 0) { // if the div is approaching a southern wormhole limit
