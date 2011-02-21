@@ -1,6 +1,6 @@
 /*  Worm Hole
 
-	Usage: $('selector').isWormHole({options}); where:
+	Usage: $('selector').isWormHole(group, objectsref, stopCallback); where:
 		group is an arbitrary name for this group of worm holes,
 		objectsref defines all child objects that can pass through the worm hole,
 		stopCallback is a callback that is called when the dragging stops on the other side of the wormhole
@@ -15,7 +15,7 @@
 			var defaults = {
 				group: 'default', 
 				selector: '*', 
-				stop: null
+				stop: function(){}
 			};
 
 			var options = $.extend(defaults, options);
@@ -60,11 +60,17 @@
 				if ($(this).position().top + $(this).height() > parent.height() && $nextWormHole.length > 0) { // if the div is approaching a southern wormhole limit
 					var newHeight = $(this).position().top - parent.height();
 					$cloneWorm.css('left', $(this).css('left')).css('opacity', $(this).css('opacity')).css('top', newHeight + "px"); //add it to the clone
-					$nextWormHole.append($cloneWorm);
+					if (!$(this).data('hasClone')) {
+						$nextWormHole.append($cloneWorm);
+						$(this).data('hasClone', true);
+					}
 				} else if ($(this).position().top < 0 && $prevWormHole.length > 0){
 					var newHeight = $(this).position().top + parent.height();
 					$cloneWorm.css('left', $(this).css('left')).css('opacity', $(this).css('opacity')).css('top', newHeight + "px"); //add it to the clone
-					$prevWormHole.append($cloneWorm);
+					if (!$(this).data('hasClone')) {
+						$prevWormHole.append($cloneWorm);
+						$(this).data('hasClone', true);
+					}
 				}
 			});
 
@@ -82,7 +88,7 @@
 
 					$(this).draggable(draggableOptions); // add the old options from the original
 
-					$(this).data('isWorm', false); // remove the isWorm so that this function is run again for the newly placed original
+					$(this).data('isWorm', false).data('hasClone', false); // remove the isWorm so that this function is run again for the newly placed original
 
 				} else if ($(this).position().top + $(this).height() > parent.height()) { // if the div is approaching a southern wormhole limit
 					var newHeight = $(this).position().top - parent.height();
@@ -102,7 +108,7 @@
 
 					$(this).draggable(draggableOptions); // add the old options from the original
 
-					$(this).data('isWorm', false); // remove the isWorm so that this function is run again for the newly placed original
+					$(this).data('isWorm', false).data('hasClone', false); // remove the isWorm so that this function is run again for the newly placed original
 				} else if ($(this).position().top < 0) {
 					var newHeight = $(this).position().top + parent.height();
 					$cloneWorm.css('left', $(this).css('left')).css('opacity', $(this).css('opacity')).css('top', newHeight + "px"); //add it to the clone
