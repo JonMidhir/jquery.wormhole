@@ -51,10 +51,16 @@
 		if (this.data('isWorm') != true) { // if it's not already a worm
 			var $nextWormHole = parent.next('.wormgroup-' + group);
 			var $prevWormHole = parent.prev('.wormgroup-' + group);
-			var $cloneWorm = this.clone(true);
-			$cloneWorm.data('isClone', true);
-
-			$(this).data('isWorm', true);
+			var $cloneWorm;
+			//alert($cloneWorm);
+			this.bind("dragstart", function(event, ui) {
+			  if ($cloneWorm == undefined) {
+				$cloneWorm = $(this).clone(true);
+				$cloneWorm.data('isClone', true);
+				$(this).data('isWorm', true);
+			  }
+			});
+			
 
 			this.bind("drag", function(event, ui) { //pairs the two so that both move when the other is grabbed
 				if ($(this).position().top + $(this).height() > parent.height() && $nextWormHole.length > 0) { // if the div is approaching a southern wormhole limit
@@ -90,30 +96,31 @@
 
 					$(this).data('isWorm', false).data('hasClone', false); // remove the isWorm so that this function is run again for the newly placed original
 
-				} else if ($(this).position().top + $(this).height() > parent.height()) { // if the div is approaching a southern wormhole limit
-					var newHeight = $(this).position().top - parent.height();
-					$cloneWorm.css('left', $(this).css('left')).css('opacity', $(this).css('opacity')).css('top', newHeight + "px"); //add it to the clone
-				
-				} else if ($(this).position().top <= (0 - $(this).height())) { // if it's beyond the northern limit (0)
-					
-					var draggableOptions = $(this).data("draggable").options; // get the options of the original draggable
+					} else if ($(this).position().top + $(this).height() > parent.height()) { // if the div is approaching a southern wormhole limit
+						var newHeight = $(this).position().top - parent.height();
+						$cloneWorm.css('left', $(this).css('left')).css('opacity', $(this).css('opacity')).css('top', newHeight + "px"); //add it to the clone
 
-					$(this).css('top', $cloneWorm.position().top + 'px'); // vertically position the original before ...
-					$cloneWorm.replaceWith($(this)); //  ... replacing the clone with it / the old switcheroo
-					delete $cloneWorm;
+					} else if ($(this).position().top <= (0 - $(this).height())) { // if it's beyond the northern limit (0)
+						var draggableOptions = $(this).data("draggable").options; // get the options of the original draggable
 
-					stopCallback; // perform any callbacks specified by the user
+						$(this).css('top', $cloneWorm.position().top + 'px'); // vertically position the original before ...
+						$cloneWorm.replaceWith($(this)); //  ... replacing the clone with it / the old switcheroo
+						delete $cloneWorm;
 
-					$(this).unbind('drag').unbind('dragstop'); // remove previous bound handlers
+						stopCallback; // perform any callbacks specified by the user
 
-					$(this).draggable(draggableOptions); // add the old options from the original
+						$(this).unbind('drag').unbind('dragstop'); // remove previous bound handlers
 
-					$(this).data('isWorm', false).data('hasClone', false); // remove the isWorm so that this function is run again for the newly placed original
-				} else if ($(this).position().top < 0) {
-					var newHeight = $(this).position().top + parent.height();
-					$cloneWorm.css('left', $(this).css('left')).css('opacity', $(this).css('opacity')).css('top', newHeight + "px"); //add it to the clone
-				} else {
+						$(this).draggable(draggableOptions); // add the old options from the original
+
+						$(this).data('isWorm', false).data('hasClone', false); // remove the isWorm so that this function is run again for the newly placed original
+					} else if ($(this).position().top < 0) {
+						var newHeight = $(this).position().top + parent.height();
+						$cloneWorm.css('left', $(this).css('left')).css('opacity', $(this).css('opacity')).css('top', newHeight + "px"); //add it to the clone
+					} else {
 					$cloneWorm.detach();
+					$(this).data('hasClone', false);
+					//alert($cloneWorm.parent().width() == null); // is cloneworm attached to the DOM?
 				}
 			});
 		}
