@@ -42,7 +42,7 @@ Tested on:
 	
 ## Documentation and demos
 
-Coming soon
+Documentation and demo available at: http://opensource.rotify.com/wormhole
 
 ## Authors
 
