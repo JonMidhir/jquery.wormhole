@@ -1,0 +1,137 @@
+html {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	font-family: 'Lucida Grande', arial;
+	font-size: 12px;
+}
+
+.container {
+	width: 950px;
+	margin: 0 auto 100px auto;
+}
+
+.right {
+	float: right;
+}
+
+.clear {
+	clear: both;
+}
+
+.small {
+	font-size: 0.8em;
+}
+
+.quiet {
+	color: #777;
+}
+
+.right_tip {
+	width: 160px;
+	padding: 10px;
+	background: rgba(0,0,0,0.8);
+	color: white;
+	position: absolute;
+	top: 30px;
+	left: 260px;
+	z-index: 10;
+}
+
+.notice {
+	padding: 5px 10px;
+	background-color: #DFF2BF;
+	border: 1px #4F8A10 solid;
+	color: #333;
+}
+
+strong {
+	font-size: 1.6em;
+	font-weight: bold;
+}
+
+code {
+	margin-left: 20px;
+	font-size: 1.2em;
+	color: #777;
+}
+
+h3 {
+	margin-left: 20px;
+}
+
+li {
+	margin: 0 0 10px 0;
+}
+
+hr {
+	margin: 30px 0 0;
+	background: #aaa;
+	height: 1px;
+	border: none;
+}
+
+#rot_header {
+	background: #1a1a1a;
+	margin-bottom: 40px;
+	padding: 5px 10px;
+	color: white;
+	font-size: 0.9em;
+}
+
+#rot_header a {
+	color: white;
+	text-decoration: none;
+}
+
+#rot_header a:hover {
+	text-decoration: underline;
+}
+
+#demo_container {
+	width: 900px;
+	padding: 24px;
+	margin: 25px 0;
+	border: 1px #bbb solid;
+	background: #eee;
+	position: relative;
+}
+
+#first_wh {
+	height: 200px;
+	width: 200px;
+	float: left;
+	background: white;
+	border: 1px #bbb solid;
+	border-bottom: 1px #2a2 dashed;
+}
+
+#second_wh {
+	height: 200px;
+	width: 200px;
+	float: right;
+	background: white;
+	border: 1px #bbb solid;
+	border-top: 1px #2a2 dashed;
+}
+
+#inbetweener {
+	background: url('../img/wormeq.png');
+	width: 404px;
+	height: 23px;
+	margin: 70px auto;
+}
+
+.draggable {
+	cursor: move;
+}
+
+.rectangle {
+	height: 60px;
+	width: 20px;
+	background-color: red;
+}

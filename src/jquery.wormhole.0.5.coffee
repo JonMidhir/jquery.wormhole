@@ -11,6 +11,22 @@
 
 $ = jQuery
 
+$.fn.isWorm = ->
+  $(@).data('isWorm') == true || $(@).data('isClone') == true
+
+$.fn.explicitlyPosition = ->
+  $(@).css('position', 'relative') if $(@).css('position') == "static"
+
+$.fn.explicitlyPositionAbsolute = ->
+  $(@).css('position', 'absolute') if $(@).css('position') != 'absolute'
+
+$.fn.containmentCoordinates = ->
+  offset = $(@).offset()
+  [offset.left, offset.top - $(@).height(), offset.left + $(@).width() - $(@).width(), offset.top + ($(@).height() * 2)]
+
+$.fn.cloneAsWorm = (deep) ->
+  $cloneWorm = $(this).clone(deep).data('isClone', true)
+
 $.fn.wormHole = (options) ->
 	
   defaults =
@@ -23,31 +39,26 @@ $.fn.wormHole = (options) ->
   @each ->
     $thisObject = $(@)
     $thisObject.css("overflow", 'hidden')
-    if $thisObject.css('position') == "static"
-      $thisObject.css('position', 'relative')
+    $thisObject.explicitlyPosition()
 
     $thisObject.find(options.selector).each ->
-      if $(@).css('position') != 'absolute'
-        $(@).css('position', 'absolute')
+      $(@).explicitlyPositionAbsolute()
 
     $thisObject.data('wormGroup', options.group)
     $thisObject.addClass('wormgroup-' + options.group)
     $thisObject.delegate options.selector, 'mouseover', ->
-      if $(@).data('isWorm') != true && $(@).data('isClone') != true
-        containmentCoords = [$thisObject.offset().left, $thisObject.offset().top - $thisObject.height(), $thisObject.offset().left + $thisObject.width() - $(this).width(), $thisObject.offset().top + ($thisObject.height() * 2)]
-        $(@).draggable("option", "containment", containmentCoords)
+      unless $(@).isWorm()
+        $(@).draggable("option", "containment", $(@).containmentCoordinates())
         $(@).draggable("option", "stack", options.selector)
-        $(@).isWorm(options.group, $thisObject, options.stop)
+        $(@).worm(options.group, $thisObject, options.stop)
 
 $.fn.worm = (group, parent, stopCallback = ->) ->
-  if (@data('isWorm') != true)
+  unless @isWorm()
     $nextWormHole = parent.next('.wormgroup-' + group)
     $prevWormHole = parent.prev('.wormgroup-' + group)
-    @bind 'dragstart', (event, ui) ->
-      if ($cloneWorm == undefined)
-        $cloneWorm = $(this).clone(true)
-        $cloneWorm.data('isClone', true)
-        $(this).data('isWorm', true)
+
+    $(@).data('isWorm', true)
+    $cloneWorm = $(this).cloneAsWorm(true)
 
     @bind 'drag', (event, ui) ->
       if $(this).position().top + $(this).height() > parent.height() && $nextWormHole.length > 0
@@ -65,11 +76,10 @@ $.fn.worm = (group, parent, stopCallback = ->) ->
 
     @bind "dragstop", (event, ui) ->
       if $(this).position().top > parent.height()
-        draggableOptions = $(this).data("draggable").options
+        draggableOptions = $(this).data("uiDraggable").options
  
         $(this).css('top', $cloneWorm.position().top + 'px')
         $cloneWorm.replaceWith($(this))
-        delete $cloneWorm
 
         stopCallback
 
@@ -85,7 +95,6 @@ $.fn.worm = (group, parent, stopCallback = ->) ->
         draggableOptions = $(this).data("draggable").options
         $(this).css('top', $cloneWorm.position().top + 'px')
         $cloneWorm.replaceWith($(this))
-        delete $cloneWorm
 
         stopCallback
 
@@ -100,3 +109,4 @@ $.fn.worm = (group, parent, stopCallback = ->) ->
       else
         $cloneWorm.detach()
         $(this).data('hasClone', false)
+  @

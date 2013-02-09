@@ -4,6 +4,33 @@
 
   $ = jQuery;
 
+  $.fn.isWorm = function() {
+    return $(this).data('isWorm') === true || $(this).data('isClone') === true;
+  };
+
+  $.fn.explicitlyPosition = function() {
+    if ($(this).css('position') === "static") {
+      return $(this).css('position', 'relative');
+    }
+  };
+
+  $.fn.explicitlyPositionAbsolute = function() {
+    if ($(this).css('position') !== 'absolute') {
+      return $(this).css('position', 'absolute');
+    }
+  };
+
+  $.fn.containmentCoordinates = function() {
+    var offset;
+    offset = $(this).offset();
+    return [offset.left, offset.top - $(this).height(), offset.left + $(this).width() - $(this).width(), offset.top + ($(this).height() * 2)];
+  };
+
+  $.fn.cloneAsWorm = function(deep) {
+    var $cloneWorm;
+    return $cloneWorm = $(this).clone(deep).data('isClone', true);
+  };
+
   $.fn.wormHole = function(options) {
     var defaults;
     defaults = {
@@ -16,44 +43,32 @@
       var $thisObject;
       $thisObject = $(this);
       $thisObject.css("overflow", 'hidden');
-      if ($thisObject.css('position') === "static") {
-        $thisObject.css('position', 'relative');
-      }
+      $thisObject.explicitlyPosition();
       $thisObject.find(options.selector).each(function() {
-        if ($(this).css('position') !== 'absolute') {
-          return $(this).css('position', 'absolute');
-        }
+        return $(this).explicitlyPositionAbsolute();
       });
       $thisObject.data('wormGroup', options.group);
       $thisObject.addClass('wormgroup-' + options.group);
       return $thisObject.delegate(options.selector, 'mouseover', function() {
-        var containmentCoords;
-        if ($(this).data('isWorm') !== true && $(this).data('isClone') !== true) {
-          containmentCoords = [$thisObject.offset().left, $thisObject.offset().top - $thisObject.height(), $thisObject.offset().left + $thisObject.width() - $(this).width(), $thisObject.offset().top + ($thisObject.height() * 2)];
-          $(this).draggable("option", "containment", containmentCoords);
+        if (!$(this).isWorm()) {
+          $(this).draggable("option", "containment", $(this).containmentCoordinates());
           $(this).draggable("option", "stack", options.selector);
-          return $(this).isWorm(options.group, $thisObject, options.stop);
+          return $(this).worm(options.group, $thisObject, options.stop);
         }
       });
     });
   };
 
   $.fn.worm = function(group, parent, stopCallback) {
-    var $nextWormHole, $prevWormHole;
+    var $cloneWorm, $nextWormHole, $prevWormHole;
     if (stopCallback == null) {
       stopCallback = function() {};
     }
-    if (this.data('isWorm') !== true) {
+    if (!this.isWorm()) {
       $nextWormHole = parent.next('.wormgroup-' + group);
       $prevWormHole = parent.prev('.wormgroup-' + group);
-      this.bind('dragstart', function(event, ui) {
-        var $cloneWorm;
-        if ($cloneWorm === void 0) {
-          $cloneWorm = $(this).clone(true);
-          $cloneWorm.data('isClone', true);
-          return $(this).data('isWorm', true);
-        }
-      });
+      $(this).data('isWorm', true);
+      $cloneWorm = $(this).cloneAsWorm(true);
       this.bind('drag', function(event, ui) {
         var newHeight;
         if ($(this).position().top + $(this).height() > parent.height() && $nextWormHole.length > 0) {
@@ -72,13 +87,12 @@
           }
         }
       });
-      return this.bind("dragstop", function(event, ui) {
+      this.bind("dragstop", function(event, ui) {
         var draggableOptions, newHeight;
         if ($(this).position().top > parent.height()) {
-          draggableOptions = $(this).data("draggable").options;
+          draggableOptions = $(this).data("uiDraggable").options;
           $(this).css('top', $cloneWorm.position().top + 'px');
           $cloneWorm.replaceWith($(this));
-          delete $cloneWorm;
           stopCallback;
 
           $(this).unbind('drag').unbind('dragstop');
@@ -91,7 +105,6 @@
           draggableOptions = $(this).data("draggable").options;
           $(this).css('top', $cloneWorm.position().top + 'px');
           $cloneWorm.replaceWith($(this));
-          delete $cloneWorm;
           stopCallback;
 
           $(this).unbind('drag').unbind('dragstop');
@@ -106,6 +119,7 @@
         }
       });
     }
+    return this;
   };
 
 }).call(this);
