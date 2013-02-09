@@ -10,7 +10,9 @@ Requires jQuery 1.4+ and jQuery-UI.
 
 Define container objects matching 'selector' as wormholes:
 
+```javascript
 	$('selector').isWormHole({options});
+```
 
 That's it!
 
